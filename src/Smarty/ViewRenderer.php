@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace App\Smarty;
 
+use App\Asset\AppAsset;
+use App\Asset\CdnFontAwesomeAsset;
+use App\Widget\FlashMessage;
 use Smarty;
+use Yiisoft\Html\Html;
 use Yiisoft\View\View;
 use Yiisoft\View\TemplateRendererInterface;
+use Yiisoft\Yii\Bootstrap5\Nav;
+use Yiisoft\Yii\Bootstrap5\NavBar;
 
 final class ViewRenderer implements TemplateRendererInterface
 {
@@ -20,8 +26,22 @@ final class ViewRenderer implements TemplateRendererInterface
     public function render(View $view, string $template, array $params): string
     {
         $smarty = $this->smarty;
-        $renderer = function () use ($view, $template, $params, $smarty) {
+        $classes = $this->layoutClassesToRegister();
+        $renderer = function () use ($view, $template, $params, $smarty, $classes) {
             $file = str_replace($view->getBasePath(), null, $template);
+
+            $params = array_merge(['classes' => $classes, 'view' => $view], $params);
+
+            foreach ($params as $key => $param) {
+                if ($key === 'classes') {
+                    foreach ($param as $name => $namespace) {
+                        $smarty->registerClass($name, $namespace);
+                    }
+                } else {
+                    $smarty->assign($key, $param);
+                }
+            }
+
             echo $smarty->display($file);
         };
 
@@ -39,5 +59,14 @@ final class ViewRenderer implements TemplateRendererInterface
             }
             throw $e;
         }
+    }
+
+    private function layoutClassesToRegister(): array
+    {
+        return [
+            'AppAsset' => AppAsset::class, 'CdnFontAwesomeAsset' => CdnFontAwesomeAsset::class,
+            'Html' => Html::class, 'NavBar' => NavBar::class, 'Nav' => Nav::class,
+            'FlashMessage' => FlashMessage::class,
+        ];
     }
 }
