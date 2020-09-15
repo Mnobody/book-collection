@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Provider;
 
+use Smarty;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
@@ -46,6 +47,12 @@ final class WebViewProvider extends ServiceProvider
             }
 
             $webView->setDefaultParameters($defaultParameters);
+
+            // Smarty template engine
+            $webView->setDefaultExtension('tpl');
+            $webView->setRenderers([
+                'tpl' => new \App\Smarty\ViewRenderer($container->get(Smarty::class))
+            ]);
 
             return $webView;
         });

@@ -32,7 +32,8 @@ return [
         'fieldConfig' => [
             'inputCssClass()' => ['form-control input field'],
             'labelOptions()' => [['label' => '']],
-            'errorOptions()' => [['class' => 'has-text-left has-text-danger is-italic']],
+            'errorCssClass()' => ['is-invalid'],
+            'errorOptions()' => [['class' => 'invalid-feedback']],
         ],
     ],
 
@@ -99,7 +100,7 @@ return [
 
     'yiisoft/yii-view' => [
         'viewBasePath' => '@views',
-        'layout' => '@resources/layout/main',
+        'layout' => null,
     ],
 
     'yiisoft/yii-web' => [
@@ -112,7 +113,7 @@ return [
     'app' => [
         'charset' => 'UTF-8',
         'language' => 'en',
-        'name' => 'My Project',
+        'name' => 'Book Collection',
     ],
 
     'mailer' => [
