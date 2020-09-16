@@ -1,5 +1,6 @@
 
-{$currentUrl = $url->generate($urlMatcher->getCurrentRoute()->getName())}
+{$parts = explode('/', $urlMatcher->getCurrentRoute()->getPattern())}
+{$currentUrl = implode(['/', $parts[1]])}
 
 {NavBar::begin()
     ->brandLabel($applicationParameters->getName())
@@ -11,8 +12,8 @@
 {Nav::widget()
     ->currentPath($currentUrl)
     ->items([
-        ['label' => 'About', 'url' => $url->generate('site/about')],
-        ['label' => 'Contact', 'url' => $url->generate('contact/form')]
+        ['label' => 'Author', 'url' => $url->generate('author/index')],
+        ['label' => 'Genre', 'url' => $url->generate('genre/index')]
     ])
     ->options(['class' => 'navbar-nav'])
 }

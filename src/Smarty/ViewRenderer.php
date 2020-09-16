@@ -30,7 +30,7 @@ final class ViewRenderer implements TemplateRendererInterface
         $renderer = function () use ($view, $template, $params, $smarty, $classes) {
             $file = str_replace($view->getBasePath(), null, $template);
 
-            $params = array_merge(['classes' => $classes, 'view' => $view], $params);
+            $params = array_merge_recursive(['classes' => $classes, 'view' => $view], $params);
 
             foreach ($params as $key => $param) {
                 if ($key === 'classes') {

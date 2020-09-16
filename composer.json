@@ -40,7 +40,9 @@
         "yiisoft/yii-event": "@dev",
         "yiisoft/yii-view": "^3.0@dev",
         "yiisoft/yii-web": "@dev",
-        "smarty/smarty": "~3.1"
+        "smarty/smarty": "~3.1",
+        "yiisoft/yii-cycle": "^3.0@dev",
+        "yiisoft/yii-dataview": "^3.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",
