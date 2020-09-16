@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Smarty;
 
 use App\Asset\AppAsset;
-use App\Asset\CdnFontAwesomeAsset;
+use App\Asset\JqueryUIAsset;
 use App\Widget\FlashMessage;
 use Smarty;
 use Yiisoft\Html\Html;
@@ -64,7 +64,7 @@ final class ViewRenderer implements TemplateRendererInterface
     private function layoutClassesToRegister(): array
     {
         return [
-            'AppAsset' => AppAsset::class, 'CdnFontAwesomeAsset' => CdnFontAwesomeAsset::class,
+            'AppAsset' => AppAsset::class, 'JqueryUIAsset' => JqueryUIAsset::class,
             'Html' => Html::class, 'NavBar' => NavBar::class, 'Nav' => Nav::class,
             'FlashMessage' => FlashMessage::class,
         ];

@@ -1,5 +1,5 @@
 
-{$assetManager->register([AppAsset::class, CdnFontAwesomeAsset::class])}
+{$assetManager->register([AppAsset::class, JqueryUIAsset::class])}
 
 {$view->setCssFiles($assetManager->getCssFiles())}
 {$view->setJsFiles($assetManager->getJsFiles())}

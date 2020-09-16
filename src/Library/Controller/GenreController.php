@@ -14,13 +14,11 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\Aliases\Aliases;
-use Yiisoft\Data\Paginator\OffsetPaginator;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Http\Header;
 use Yiisoft\Http\Method;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Session\Flash\Flash;
-use Yiisoft\Yii\DataView\Widget\LinkPager;
 
 final class GenreController
 {
@@ -40,7 +38,6 @@ final class GenreController
         $repository = $orm->getRepository(Genre::class);
 
         $dataReader = $repository->list();
-        $paginator = new OffsetPaginator($dataReader);
 
         return $this->viewRenderer->render('index', [
             'dataReader' => $dataReader,
@@ -113,7 +110,7 @@ final class GenreController
         ]);
     }
 
-    public function delete(GenreService $service,  ServerRequestInterface $request, Flash $flash, DataResponseFactoryInterface $responseFactory, UrlGeneratorInterface $url): ResponseInterface
+    public function delete(GenreService $service, ServerRequestInterface $request, Flash $flash, DataResponseFactoryInterface $responseFactory, UrlGeneratorInterface $url): ResponseInterface
     {
         $service->delete((int) $request->getAttribute('id'));
 
