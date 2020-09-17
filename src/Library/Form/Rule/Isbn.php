@@ -9,4 +9,5 @@ use Yiisoft\Validator\Rule\Number;
 final class Isbn extends Number
 {
     // todo: validate isbn
+    // todo: ex: https://github.com/Fale/isbn
 }

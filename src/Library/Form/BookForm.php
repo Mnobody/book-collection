@@ -61,8 +61,8 @@ final class BookForm extends FormModel
         $this->setAttribute('isbn', $entity->getIsbn() ?? '');
         $this->setAttribute('page_count', $entity->getPageCount() ?? '');
         $this->setAttribute('description', $entity->getDescription() ?? '');
-        $this->setAttribute('price_net', $entity->getPriceNet());
-        $this->setAttribute('price_gross', $entity->getPriceGross());
+        $this->setAttribute('price_net', $entity->getPriceNet()); // todo: convert from integer (cents) (as stored in db) to decimal (currency)
+        $this->setAttribute('price_gross', $entity->getPriceGross()); // todo: convert from integer (cents) (as stored in db) to decimal (currency)
         $this->setAttribute('active', (string) $entity->getActive());
 
         // authors
