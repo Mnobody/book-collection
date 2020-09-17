@@ -8,7 +8,7 @@ use Cycle\Annotated\Annotation\Entity;
 use Cycle\Annotated\Annotation\Column;
 
 /**
- * @Entity(repository="App\Library\Repository\BookRepository")
+ * @Entity(repository="App\Library\Repository\BookGenreRepository")
  */
 final class BookGenre
 {

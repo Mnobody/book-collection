@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Library\Service;
 
+use App\Library\Entity\BookAuthor;
+use App\Library\Repository\BookAuthorRepository;
 use DateTimeImmutable;
 use Cycle\ORM\Transaction;
 use Cycle\ORM\ORMInterface;
@@ -47,12 +49,20 @@ final class AuthorService
 
     public function delete(int $id)
     {
+        $transaction = new Transaction($this->orm);
+
+        /** @var BookAuthorRepository $pivotRepository */
+        $pivotRepository = $this->orm->getRepository(BookAuthor::class);
+
+        foreach ($pivotRepository->findAll(['author_id' => $id]) as $item) {
+            $transaction->delete($item);
+        }
+
         /** @var AuthorRepository $repository */
         $repository = $this->orm->getRepository(Author::class);
-
+        /** @var Author $author */
         $author = $repository->findOne(['id' => $id]);
 
-        $transaction = new Transaction($this->orm);
         $transaction->delete($author);
         $transaction->run();
     }

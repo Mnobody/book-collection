@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace App\Library\Service;
 
 use App\Library\Entity\Author;
+use App\Library\Entity\BookAuthor;
+use App\Library\Entity\BookGenre;
 use App\Library\Entity\Genre;
 use App\Library\Repository\AuthorRepository;
+use App\Library\Repository\BookAuthorRepository;
+use App\Library\Repository\BookGenreRepository;
 use App\Library\Repository\GenreRepository;
 use Cycle\ORM\Transaction;
 use Cycle\ORM\ORMInterface;
@@ -50,12 +54,27 @@ final class BookService
 
     public function delete(int $id)
     {
+        $transaction = new Transaction($this->orm);
+
+        /** @var BookGenreRepository $pivotRepository */
+        $pivotRepository = $this->orm->getRepository(BookGenre::class);
+
+        foreach ($pivotRepository->findAll(['book_id' => $id]) as $item) {
+            $transaction->delete($item);
+        }
+
+        /** @var BookAuthorRepository $pivotRepository */
+        $pivotRepository = $this->orm->getRepository(BookAuthor::class);
+
+        foreach ($pivotRepository->findAll(['book_id' => $id]) as $item) {
+            $transaction->delete($item);
+        }
+
         /** @var BookRepository $repository */
         $repository = $this->orm->getRepository(Book::class);
-
+        /** @var Book $book */
         $book = $repository->findOne(['id' => $id]);
 
-        $transaction = new Transaction($this->orm);
         $transaction->delete($book);
         $transaction->run();
     }
