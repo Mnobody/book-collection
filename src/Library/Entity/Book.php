@@ -98,17 +98,11 @@ final class Book
         $this->description = $description;
     }
 
-    /**
-     * @return int
-     */
     public function getPriceNet(): int
     {
         return $this->price_net;
     }
 
-    /**
-     * @param int $price_net
-     */
     public function setPriceNet(int $price_net): void
     {
         $this->price_net = $price_net;

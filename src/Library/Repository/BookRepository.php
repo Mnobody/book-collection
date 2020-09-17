@@ -16,4 +16,21 @@ final class BookRepository extends Repository
             $this->select()->orderBy(['id' => 'DESC'])
         );
     }
+
+    public function search(string $q): DataReaderInterface
+    {
+        $phrase = '%' . $q . '%';
+
+        return new SelectDataReader(
+            $this->select()
+                ->with('authors')
+                ->with('genres')
+                ->where('title', 'like', $phrase)
+                ->orWhere('isbn', 'like', $phrase)
+                ->orWhere('authors.name', 'like', $phrase)
+                ->orWhere('authors.surname', 'like', $phrase)
+                ->orWhere('genres.name', 'like', $phrase)
+                ->orderBy(['id' => 'DESC'])
+        );
+    }
 }

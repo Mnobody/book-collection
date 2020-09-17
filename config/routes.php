@@ -9,7 +9,7 @@ use App\Library\Controller\GenreController;
 use App\Library\Controller\AuthorController;
 
 return [
-    Route::get('/', [BookController::class, 'index'])->name('book/index'),
+    Route::methods([Method::GET, Method::POST], '/', [BookController::class, 'index'])->name('book/index'),
     Route::methods([Method::GET, Method::POST], '/book/create', [BookController::class, 'create'])->name('book/create'),
     Route::methods([Method::GET, Method::POST], '/book/update/{id:\w+}', [BookController::class, 'update'])->name('book/update'),
     Route::methods([Method::GET, Method::POST], '/book/delete/{id:\w+}', [BookController::class, 'delete'])->name('book/delete'),

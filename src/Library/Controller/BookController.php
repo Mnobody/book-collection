@@ -8,6 +8,7 @@ use App\Library\Entity\Author;
 use App\Library\Entity\Book;
 use App\Library\Entity\Genre;
 use App\Library\Form\BookForm;
+use App\Library\Form\SearchForm;
 use App\Library\Repository\BookRepository;
 use App\Library\Service\BookService;
 use App\View\ViewRenderer;
@@ -34,18 +35,27 @@ final class BookController
         $this->responseFactory = $responseFactory;
     }
 
-    public function index(ORMInterface $orm, Aliases $aliases): ResponseInterface
+    public function index(SearchForm $form, ORMInterface $orm, Aliases $aliases, ServerRequestInterface $request): ResponseInterface
     {
+        $body = $request->getParsedBody();
+        $method = $request->getMethod();
+
         /** @var BookRepository $repository */
         $repository = $orm->getRepository(Book::class);
 
-        $dataReader = $repository->list();
+        if (($method === Method::POST) && $form->load($body) && $form->validate()) {
+            $dataReader = $repository->search($form->getAttributeValue('q'));
+        } else {
+            $dataReader = $repository->list();
+        }
 
-        return $this->viewRenderer->render('index', [
+        return $this->viewRenderer->withCsrf()->render('index', [
+            'form' => $form,
             'dataReader' => $dataReader,
             'viewItem' => $aliases->get('@views/book/_item.tpl'),
             'classes' => [
-                'ListView' => \App\Widget\ListView::class
+                'ListView' => \App\Widget\ListView::class,
+                'Form' => \Yiisoft\Form\Widget\Form::class,
             ]
         ]);
     }
