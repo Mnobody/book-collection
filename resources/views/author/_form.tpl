@@ -23,10 +23,8 @@
 
     <script type="application/javascript">
         document.addEventListener('DOMContentLoaded', function (event) {
-            $(function () {
-                $("#authorform-birthday").datepicker({
-                    dateFormat: "yy-mm-dd"
-                });
+            $("#authorform-birthday").datepicker({
+                dateFormat: "yy-mm-dd"
             });
         });
     </script>

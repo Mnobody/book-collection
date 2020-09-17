@@ -20,6 +20,8 @@ final class BookForm extends FormModel
     private string $price_net = '';
     private string $price_gross = '';
     private string $active = '';
+    private string $authors = '';
+    private string $genres = '';
 
     public function attributeLabels(): array
     {
@@ -31,6 +33,8 @@ final class BookForm extends FormModel
             'price_net' => 'Price Net',
             'price_gross' => 'Price Gross',
             'active' => 'Active',
+            'authors' => 'Authors',
+            'genres' => 'Genres',
         ];
     }
 
@@ -60,5 +64,19 @@ final class BookForm extends FormModel
         $this->setAttribute('price_net', $entity->getPriceNet());
         $this->setAttribute('price_gross', $entity->getPriceGross());
         $this->setAttribute('active', (string) $entity->getActive());
+
+        // authors
+        $ids = [];
+        foreach ($entity->getAuthors() as $author) {
+            $ids[] = $author->getId();
+        }
+        $this->setAttribute('authors', implode(',', $ids));
+
+        // genres
+        $ids = [];
+        foreach ($entity->getGenres() as $genre) {
+            $ids[] = $genre->getId();
+        }
+        $this->setAttribute('genres', implode(',', $ids));
     }
 }

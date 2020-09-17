@@ -15,10 +15,16 @@ class OrmDefault94427fd26a3c59d57cb1afbbe0c16ab7 extends Migration
         $this->author();
         $this->book();
         $this->genre();
+
+        $this->book_author();
+        $this->book_genre();
     }
 
     public function down()
     {
+        $this->table('book_author')->drop();
+        $this->table('book_genre')->drop();
+
         $this->table('author')->drop();
         $this->table('book')->drop();
         $this->table('genre')->drop();
@@ -60,6 +66,34 @@ class OrmDefault94427fd26a3c59d57cb1afbbe0c16ab7 extends Migration
         $schema->bigPrimary('id');
         $schema->string('name')->nullable(false);
         $schema->boolean('active');
+
+        $schema->save();
+    }
+
+    private function book_author()
+    {
+        $schema = $this->table('book_author')->getSchema();
+
+        $schema->bigPrimary('id');
+        $schema->bigInteger('book_id')->nullable(false);
+        $schema->bigInteger('author_id')->nullable(false);
+
+        $schema->foreignKey(['book_id'])->references('book', ['id']);
+        $schema->foreignKey(['author_id'])->references('author', ['id']);
+
+        $schema->save();
+    }
+
+    private function book_genre()
+    {
+        $schema = $this->table('book_genre')->getSchema();
+
+        $schema->bigPrimary('id');
+        $schema->bigInteger('book_id')->nullable(false);
+        $schema->bigInteger('genre_id')->nullable(false);
+
+        $schema->foreignKey(['book_id'])->references('book', ['id']);
+        $schema->foreignKey(['genre_id'])->references('genre', ['id']);
 
         $schema->save();
     }

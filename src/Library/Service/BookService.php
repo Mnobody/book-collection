@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Library\Service;
 
+use App\Library\Entity\Author;
+use App\Library\Entity\Genre;
+use App\Library\Repository\AuthorRepository;
+use App\Library\Repository\GenreRepository;
 use Cycle\ORM\Transaction;
 use Cycle\ORM\ORMInterface;
 use App\Library\Entity\Book;
@@ -67,6 +71,36 @@ final class BookService
         $entity->setPriceNet((int) $form->getAttributeValue('price_net'));
         $entity->setPriceGross((int) $form->getAttributeValue('price_gross'));
         $entity->setActive((bool) $form->getAttributeValue('active'));
+
+        // authors
+        $ids = explode(',', $form->getAttributeValue('authors'));
+        /** @var AuthorRepository $repository */
+        $repository = $this->orm->getRepository(Author::class);
+        /** @var Author[] $authors */
+        $authors = $repository->allActive();
+        foreach ($authors as $author) {
+            if (in_array($author->getId(), $ids) && !$entity->getAuthors()->contains($author)) {
+                $entity->getAuthors()->add($author);
+            }
+            if (!in_array($author->getId(), $ids) && $entity->getAuthors()->contains($author)) {
+                $entity->getAuthors()->removeElement($author);
+            }
+        }
+
+        // genres
+        $ids = explode(',', $form->getAttributeValue('genres'));
+        /** @var GenreRepository $repository */
+        $repository = $this->orm->getRepository(Genre::class);
+        /** @var Genre[] $genres */
+        $genres = $repository->allActive();
+        foreach ($genres as $genre) {
+            if (in_array($genre->getId(), $ids) && !$entity->getGenres()->contains($genre)) {
+                $entity->getGenres()->add($genre);
+            }
+            if (!in_array($genre->getId(), $ids) && $entity->getGenres()->contains($genre)) {
+                $entity->getGenres()->removeElement($genre);
+            }
+        }
 
         return $entity;
     }

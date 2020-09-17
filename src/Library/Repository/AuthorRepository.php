@@ -16,4 +16,9 @@ final class AuthorRepository extends Repository
             $this->select()->orderBy(['id' => 'DESC'])
         );
     }
+
+    public function allActive(): array
+    {
+        return $this->select()->where(['active' => true])->fetchAll();
+    }
 }

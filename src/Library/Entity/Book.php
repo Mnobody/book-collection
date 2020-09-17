@@ -6,6 +6,9 @@ namespace App\Library\Entity;
 
 use Cycle\Annotated\Annotation\Entity;
 use Cycle\Annotated\Annotation\Column;
+use Cycle\Annotated\Annotation\Relation\ManyToMany;
+use Cycle\ORM\Relation\Pivoted\PivotedCollection;
+use \Cycle\ORM\Relation\Pivoted\PivotedCollectionInterface;
 
 /**
  * @Entity(repository="App\Library\Repository\BookRepository")
@@ -37,6 +40,18 @@ final class Book
 
     /** @Column(type = "bool") */
     private bool $active;
+
+    /** @ManyToMany(target = "Author", though = "BookAuthor") */
+    private PivotedCollectionInterface $authors;
+
+    /** @ManyToMany(target = "Genre", though = "BookGenre") */
+    private PivotedCollectionInterface $genres;
+
+    public function __construct()
+    {
+        $this->authors = new PivotedCollection;
+        $this->genres = new PivotedCollection;
+    }
 
     public function getId(): ?int
     {
@@ -117,5 +132,25 @@ final class Book
     public function setActive(bool $active): void
     {
         $this->active = $active;
+    }
+
+    public function getAuthors(): PivotedCollectionInterface
+    {
+        return $this->authors;
+    }
+
+    public function setAuthors(PivotedCollectionInterface $authors): void
+    {
+        $this->authors = $authors;
+    }
+
+    public function getGenres(): PivotedCollectionInterface
+    {
+        return $this->genres;
+    }
+
+    public function setGenres(PivotedCollectionInterface $genres): void
+    {
+        $this->genres = $genres;
     }
 }

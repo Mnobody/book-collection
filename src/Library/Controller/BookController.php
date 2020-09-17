@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Library\Controller;
 
+use App\Library\Entity\Author;
 use App\Library\Entity\Book;
+use App\Library\Entity\Genre;
 use App\Library\Form\BookForm;
 use App\Library\Repository\BookRepository;
 use App\Library\Service\BookService;
@@ -14,6 +16,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yiisoft\Aliases\Aliases;
+use Yiisoft\Arrays\ArrayHelper;
 use Yiisoft\DataResponse\DataResponseFactoryInterface;
 use Yiisoft\Http\Header;
 use Yiisoft\Http\Method;
@@ -33,7 +36,6 @@ final class BookController
 
     public function index(ORMInterface $orm, Aliases $aliases): ResponseInterface
     {
-
         /** @var BookRepository $repository */
         $repository = $orm->getRepository(Book::class);
 
@@ -48,7 +50,7 @@ final class BookController
         ]);
     }
 
-    public function create(BookForm $form, BookService $service, Flash $flash, UrlGeneratorInterface $url, ServerRequestInterface $request): ResponseInterface
+    public function create(BookForm $form, BookService $service, ORMInterface $orm, Flash $flash, UrlGeneratorInterface $url, ServerRequestInterface $request): ResponseInterface
     {
         $body = $request->getParsedBody();
         $method = $request->getMethod();
@@ -67,6 +69,8 @@ final class BookController
         return $this->viewRenderer->withCsrf()->render('create', [
             'form' => $form,
             'actionUrl' => $url->generate('book/create'),
+            'authors' => $orm->getRepository(Author::class)->allActive(),
+            'genres' => $orm->getRepository(Genre::class)->allActive(),
             'classes' => [
                 'Form' => \Yiisoft\Form\Widget\Form::class,
             ]
@@ -100,6 +104,8 @@ final class BookController
         return $this->viewRenderer->withCsrf()->render('update', [
             'form' => $form,
             'actionUrl' => $url->generate('book/update', ['id' => $id]),
+            'authors' => $orm->getRepository(Author::class)->allActive(),
+            'genres' => $orm->getRepository(Genre::class)->allActive(),
             'classes' => [
                 'Form' => \Yiisoft\Form\Widget\Form::class,
             ]
