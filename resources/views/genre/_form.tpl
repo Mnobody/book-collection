@@ -9,7 +9,6 @@
         ->start()
     }
 
-    {$field->config($form, 'id')->hiddenInput()}
     {$field->config($form, 'name')}
     {$field->config($form, 'active')->checkbox(['class' => 'mt-4'])}
 

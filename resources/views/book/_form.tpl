@@ -3,15 +3,18 @@
     {Form::begin()
         ->action($actionUrl)
         ->options([
-            'id' => 'form-author',
+            'id' => 'form-book',
             'csrf' => $csrf
         ])
         ->start()
     }
 
-    {$field->config($form, 'name')}
-    {$field->config($form, 'surname')}
-    {$field->config($form, 'birthday')->textInput(['autocomplete' => 'off'])}
+    {$field->config($form, 'title')}
+    {$field->config($form, 'isbn')}
+    {$field->config($form, 'page_count')}
+    {$field->config($form, 'description')->textArea(['rows' => 4])}
+    {$field->config($form, 'price_net')}
+    {$field->config($form, 'price_gross')}
     {$field->config($form, 'active')->checkbox(['class' => 'mt-4'])}
 
     {Html::submitButton('Save', [
@@ -23,11 +26,7 @@
 
     <script type="application/javascript">
         document.addEventListener('DOMContentLoaded', function (event) {
-            $(function () {
-                $("#authorform-birthday").datepicker({
-                    dateFormat: "yy-mm-dd"
-                });
-            });
+
         });
     </script>
 </div>

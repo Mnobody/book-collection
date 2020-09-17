@@ -78,9 +78,16 @@ final class AuthorController
         $body = $request->getParsedBody();
         $method = $request->getMethod();
 
+        /** @var AuthorRepository $repository */
+        $repository = $orm->getRepository(Author::class);
+        /** @var Author $author */
+        $author = $repository->findOne(['id' => $id]);
+
+        $form->loadFromEntity($author);
+
         if (($method === Method::POST) && $form->load($body) && $form->validate()) {
 
-            $service->update($form);
+            $service->update((int) $id, $form);
 
             $flash->add('success', ['body' => 'Author successfully updated'], true);
 
@@ -88,19 +95,6 @@ final class AuthorController
                 ->createResponse(302)
                 ->withHeader(Header::LOCATION, $url->generate('author/index'));
         }
-
-        /** @var AuthorRepository $repository */
-        $repository = $orm->getRepository(Author::class);
-        /** @var Author $author */
-        $author = $repository->findOne(['id' => $id]);
-
-        $form->load([
-            'id' => $author->getId(),
-            'name' => $author->getName(),
-            'surname' => $author->getSurname(),
-            'birthday' => $author->getBirthday() ? $author->getBirthday()->format('Y-m-d') : '',
-            'active' => (string) $author->getActive(),
-        ], '');
 
         return $this->viewRenderer->withCsrf()->render('update', [
             'form' => $form,

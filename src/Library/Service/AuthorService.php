@@ -23,33 +23,22 @@ final class AuthorService
     public function create(AuthorForm $form)
     {
         $author = new Author;
-        $author->setName($form->getAttributeValue('name'));
-        $author->setSurname($form->getAttributeValue('surname'));
-        if ($birthday = $form->getAttributeValue('birthday')) {
-            $author->setBirthday(new DateTimeImmutable($birthday));
-        }
-        $author->setActive((bool) $form->getAttributeValue('active'));
+        $this->fillEntity($author, $form);
 
         $transaction = new Transaction($this->orm);
         $transaction->persist($author);
         $transaction->run();
     }
 
-    public function update(AuthorForm $form)
+    public function update(int $id, AuthorForm $form)
     {
         /** @var AuthorRepository $repository */
         $repository = $this->orm->getRepository(Author::class);
 
-        $author = $repository->findOne(['id' => $form->getAttributeValue('id')]);
+        /** @var Author $author */
+        $author = $repository->findOne(['id' => $id]);
 
-        $author->setName($form->getAttributeValue('name'));
-        $author->setSurname($form->getAttributeValue('surname'));
-        if ($birthday = $form->getAttributeValue('birthday')) {
-            $author->setBirthday(new DateTimeImmutable($birthday));
-        } else {
-            $author->setBirthday(null);
-        }
-        $author->setActive((bool) $form->getAttributeValue('active'));
+        $this->fillEntity($author, $form);
 
         $transaction = new Transaction($this->orm);
         $transaction->persist($author);
@@ -66,5 +55,15 @@ final class AuthorService
         $transaction = new Transaction($this->orm);
         $transaction->delete($author);
         $transaction->run();
+    }
+
+    private function fillEntity(Author $entity, AuthorForm $form): Author
+    {
+        $entity->setName($form->getAttributeValue('name'));
+        $entity->setSurname($form->getAttributeValue('surname'));
+        $entity->setBirthday($form->getAttributeValue('birthday') ? new DateTimeImmutable($form->getAttributeValue('birthday')) : null);
+        $entity->setActive((bool) $form->getAttributeValue('active'));
+
+        return $entity;
     }
 }

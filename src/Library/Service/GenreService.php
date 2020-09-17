@@ -22,23 +22,22 @@ final class GenreService
     public function create(GenreForm $form): void
     {
         $genre = new Genre;
-        $genre->setName($form->getAttributeValue('name'));
-        $genre->setActive((bool) $form->getAttributeValue('active'));
+        $this->fillEntity($genre, $form);
 
         $transaction = new Transaction($this->orm);
         $transaction->persist($genre);
         $transaction->run();
     }
 
-    public function update(GenreForm $form): void
+    public function update(int $id, GenreForm $form): void
     {
         /** @var GenreRepository $repository */
         $repository = $this->orm->getRepository(Genre::class);
 
-        $genre = $repository->findOne(['id' => $form->getAttributeValue('id')]);
+        /** @var Genre $genre */
+        $genre = $repository->findOne(['id' => $id]);
 
-        $genre->setName($form->getAttributeValue('name'));
-        $genre->setActive((bool) $form->getAttributeValue('active'));
+        $this->fillEntity($genre, $form);
 
         $transaction = new Transaction($this->orm);
         $transaction->persist($genre);
@@ -55,5 +54,13 @@ final class GenreService
         $transaction = new Transaction($this->orm);
         $transaction->delete($genre);
         $transaction->run();
+    }
+
+    private function fillEntity(Genre $entity, GenreForm $form): Genre
+    {
+        $entity->setName($form->getAttributeValue('name'));
+        $entity->setActive((bool) $form->getAttributeValue('active'));
+
+        return $entity;
     }
 }

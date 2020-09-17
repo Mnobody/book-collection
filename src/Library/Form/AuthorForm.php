@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Library\Form;
 
+use App\Library\Entity\Author;
 use Yiisoft\Form\FormModel;
 use Yiisoft\Validator\Rule\Boolean;
 use Yiisoft\Validator\Rule\Required;
@@ -11,7 +12,6 @@ use Yiisoft\Validator\Rule\MatchRegularExpression;
 
 final class AuthorForm extends FormModel
 {
-    private ?int $id = null;
     private string $name = '';
     private string $surname = '';
     private string $birthday = '';
@@ -40,5 +40,13 @@ final class AuthorForm extends FormModel
             'birthday' => [(new MatchRegularExpression('/^\d{4}-\d{2}-\d{2}$/'))->skipOnEmpty(true)],
             'active' => [new Boolean],
         ];
+    }
+
+    public function loadFromEntity(Author $entity)
+    {
+        $this->setAttribute('name', $entity->getName());
+        $this->setAttribute('surname', $entity->getSurname());
+        $this->setAttribute('birthday', $entity->getBirthday() ? $entity->getBirthday()->format('Y-m-d') : '');
+        $this->setAttribute('active', (string) $entity->getActive());
     }
 }

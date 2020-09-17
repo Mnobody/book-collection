@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Library\Controller;
 
-use App\Library\Entity\Genre;
-use App\Library\Form\GenreForm;
-use App\Library\Repository\GenreRepository;
-use App\Library\Service\GenreService;
+use App\Library\Entity\Book;
+use App\Library\Form\BookForm;
+use App\Library\Repository\BookRepository;
+use App\Library\Service\BookService;
 use App\View\ViewRenderer;
 use Cycle\ORM\ORMInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -20,35 +20,35 @@ use Yiisoft\Http\Method;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Session\Flash\Flash;
 
-final class GenreController
+final class BookController
 {
     private ViewRenderer $viewRenderer;
-
     private ResponseFactoryInterface $responseFactory;
 
     public function __construct(ViewRenderer $viewRenderer, ResponseFactoryInterface $responseFactory)
     {
-        $this->viewRenderer = $viewRenderer->withControllerName('genre');
+        $this->viewRenderer = $viewRenderer->withControllerName('book');
         $this->responseFactory = $responseFactory;
     }
 
     public function index(ORMInterface $orm, Aliases $aliases): ResponseInterface
     {
-        /** @var GenreRepository $repository */
-        $repository = $orm->getRepository(Genre::class);
+
+        /** @var BookRepository $repository */
+        $repository = $orm->getRepository(Book::class);
 
         $dataReader = $repository->list();
 
         return $this->viewRenderer->render('index', [
             'dataReader' => $dataReader,
-            'viewItem' => $aliases->get('@views/genre/_item.tpl'),
+            'viewItem' => $aliases->get('@views/book/_item.tpl'),
             'classes' => [
                 'ListView' => \App\Widget\ListView::class
             ]
         ]);
     }
 
-    public function create(GenreForm $form, GenreService $service, Flash $flash, UrlGeneratorInterface $url, ServerRequestInterface $request): ResponseInterface
+    public function create(BookForm $form, BookService $service, Flash $flash, UrlGeneratorInterface $url, ServerRequestInterface $request): ResponseInterface
     {
         $body = $request->getParsedBody();
         $method = $request->getMethod();
@@ -57,62 +57,62 @@ final class GenreController
 
             $service->create($form);
 
-            $flash->add('success', ['body' => 'New genre successfully created'], true);
+            $flash->add('success', ['body' => 'New book successfully created'], true);
 
             return $this->responseFactory
                 ->createResponse(302)
-                ->withHeader(Header::LOCATION, $url->generate('genre/index'));
+                ->withHeader(Header::LOCATION, $url->generate('book/index'));
         }
 
         return $this->viewRenderer->withCsrf()->render('create', [
             'form' => $form,
-            'actionUrl' => $url->generate('genre/create'),
+            'actionUrl' => $url->generate('book/create'),
             'classes' => [
                 'Form' => \Yiisoft\Form\Widget\Form::class,
             ]
         ]);
     }
 
-    public function update(GenreForm $form, GenreService $service, ORMInterface $orm, Flash $flash, UrlGeneratorInterface $url, ServerRequestInterface $request): ResponseInterface
+    public function update(BookForm $form, BookService $service, ORMInterface $orm, Flash $flash, UrlGeneratorInterface $url, ServerRequestInterface $request): ResponseInterface
     {
         $id = $request->getAttribute('id');
         $body = $request->getParsedBody();
         $method = $request->getMethod();
 
-        /** @var GenreRepository $repository */
-        $repository = $orm->getRepository(Genre::class);
-        /** @var Genre $genre */
-        $genre = $repository->findOne(['id' => $id]);
+        /** @var BookRepository $repository */
+        $repository = $orm->getRepository(Book::class);
+        /** @var Book $book */
+        $book = $repository->findOne(['id' => $id]);
 
-        $form->loadFromEntity($genre);
+        $form->loadFromEntity($book);
 
         if (($method === Method::POST) && $form->load($body) && $form->validate()) {
 
             $service->update((int) $id, $form);
 
-            $flash->add('success', ['body' => 'Genre successfully updated'], true);
+            $flash->add('success', ['body' => 'Book successfully updated'], true);
 
             return $this->responseFactory
                 ->createResponse(302)
-                ->withHeader(Header::LOCATION, $url->generate('genre/index'));
+                ->withHeader(Header::LOCATION, $url->generate('book/index'));
         }
 
         return $this->viewRenderer->withCsrf()->render('update', [
             'form' => $form,
-            'actionUrl' => $url->generate('genre/update', ['id' => $id]),
+            'actionUrl' => $url->generate('book/update', ['id' => $id]),
             'classes' => [
                 'Form' => \Yiisoft\Form\Widget\Form::class,
             ]
         ]);
     }
 
-    public function delete(GenreService $service, ServerRequestInterface $request, Flash $flash, DataResponseFactoryInterface $responseFactory, UrlGeneratorInterface $url): ResponseInterface
+    public function delete(BookService $service, ServerRequestInterface $request, Flash $flash, DataResponseFactoryInterface $responseFactory, UrlGeneratorInterface $url): ResponseInterface
     {
         $service->delete((int) $request->getAttribute('id'));
 
-        $flash->add('success', ['body' => 'Genre successfully deleted'], true);
+        $flash->add('success', ['body' => 'Book successfully deleted'], true);
 
         return $responseFactory->createResponse(302)
-            ->withHeader(Header::LOCATION, $url->generate('genre/index'));
+            ->withHeader(Header::LOCATION, $url->generate('book/index'));
     }
 }
