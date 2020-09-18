@@ -6,6 +6,12 @@ Call terminal command in projects directory on your machine
 git clone https://github.com/Mnobody/book-collection.git
 ```
 
+### Composer 
+
+```
+composer install
+```
+
 ### Database
 Create empty database and provide configuration in file /config/params-local.php
 ```
